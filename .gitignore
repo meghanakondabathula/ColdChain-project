@@ -1,0 +1,27 @@
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+
+# Secrets
+.env
+.env.*
+
+# SQLite databases
+*.sqlite
+*.db
+
+# Large datasets and duplicate folders
+output/*
+!output/.gitkeep
+output_again/
+full/
+starter/
+
+# Generated files
+*.log

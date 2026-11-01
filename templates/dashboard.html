@@ -1,0 +1,930 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Operations Dashboard | Cold Chain Compliance</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f6fc;
+            color: #172b4d;
+            margin: 0;
+        }
+
+        /* NAVBAR */
+
+        .top-navbar {
+            background: #ffffff;
+            padding: 15px 30px;
+            box-shadow: 0 2px 12px rgba(30, 60, 100, 0.06);
+            border-bottom: 1px solid #e9eef6;
+        }
+
+        .navbar-brand {
+            color: #1558a6 !important;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            margin-right: 9px;
+            border-radius: 10px;
+            background: #e8f2ff;
+            color: #1765c5;
+            font-size: 23px;
+        }
+
+        .user-info {
+            color: #53657f;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .user-info strong {
+            color: #172b4d;
+        }
+
+        .nav-action {
+            border-radius: 8px;
+            padding: 9px 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-deviation {
+            background: #edf5ff;
+            color: #1765c5;
+            border: 1px solid #d6e8ff;
+        }
+
+        .btn-deviation:hover {
+            background: #dcecff;
+            color: #104f9c;
+        }
+
+        .btn-users {
+            background: #1765c5;
+            color: white;
+            border: 1px solid #1765c5;
+        }
+
+        .btn-users:hover {
+            background: #104f9c;
+            color: white;
+        }
+
+        .btn-logout {
+            background: white;
+            border: 1px solid #d9e1ed;
+            color: #53657f;
+        }
+
+        .btn-logout:hover {
+            background: #f0f4fa;
+            color: #172b4d;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-container {
+            max-width: 1600px;
+            margin: auto;
+            padding: 35px 30px;
+        }
+
+        .page-heading {
+            font-size: 27px;
+            font-weight: 800;
+            color: #172b4d;
+            letter-spacing: -0.8px;
+            margin-bottom: 7px;
+        }
+
+        .page-subtitle {
+            color: #8290a5;
+            font-size: 13px;
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #243b5a;
+            margin-bottom: 5px;
+        }
+
+        .section-subtitle {
+            font-size: 12px;
+            color: #8a98ad;
+        }
+
+        /* STATISTIC CARDS */
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e9eef6;
+            border-radius: 13px;
+            padding: 22px;
+            height: 100%;
+            box-shadow: 0 4px 15px rgba(30, 60, 100, 0.035);
+            transition: 0.25s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 22px rgba(30, 60, 100, 0.08);
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 17px;
+        }
+
+        .stat-label {
+            color: #77869d;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            font-size: 20px;
+        }
+
+        .icon-blue {
+            background: #e8f2ff;
+            color: #1765c5;
+        }
+
+        .icon-cyan {
+            background: #e5f8fc;
+            color: #1397b5;
+        }
+
+        .icon-purple {
+            background: #f1edff;
+            color: #7654ce;
+        }
+
+        .icon-green {
+            background: #e8f8ef;
+            color: #269b60;
+        }
+
+        .stat-value {
+            font-size: 29px;
+            font-weight: 800;
+            color: #172b4d;
+            margin: 0;
+        }
+
+        .stat-description {
+            color: #9aa6b8;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        /* GENERAL CARDS */
+
+        .dashboard-card {
+            background: #ffffff;
+            border: 1px solid #e9eef6;
+            border-radius: 13px;
+            box-shadow: 0 4px 15px rgba(30, 60, 100, 0.035);
+            height: 100%;
+        }
+
+        .card-heading {
+            padding: 22px 23px 15px;
+            border-bottom: 1px solid #edf1f7;
+        }
+
+        .card-content {
+            padding: 22px 23px;
+        }
+
+        /* COMPLIANCE CHART */
+
+        .chart-container {
+            height: 280px;
+            position: relative;
+        }
+
+        /* COMPLIANCE SUMMARY */
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 17px 0;
+            border-bottom: 1px solid #edf1f7;
+            font-size: 13px;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #65758e;
+        }
+
+        .summary-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+        }
+
+        .dot-green {
+            background: #2ca66d;
+        }
+
+        .dot-yellow {
+            background: #e9aa37;
+        }
+
+        .dot-red {
+            background: #e25c62;
+        }
+
+        .summary-value {
+            font-size: 17px;
+            font-weight: 700;
+            color: #243b5a;
+        }
+
+        /* SHIPMENT MONITORING */
+
+        .shipment-card {
+            margin-top: 25px;
+        }
+
+        .search-control,
+        .filter-control {
+            height: 43px;
+            border: 1px solid #dfe6f0;
+            border-radius: 8px;
+            background: #fbfcff;
+            font-size: 12px;
+            color: #344563;
+        }
+
+        .search-control:focus,
+        .filter-control:focus {
+            border-color: #2878d0;
+            box-shadow: 0 0 0 3px rgba(40, 120, 208, 0.1);
+        }
+
+        .table {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .table thead th {
+            background: #f3f7fd;
+            color: #687b96;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 15px 14px;
+            border-bottom: 1px solid #e5ebf3;
+        }
+
+        .table tbody td {
+            padding: 15px 14px;
+            color: #52647e;
+            font-size: 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid #edf1f7;
+        }
+
+        .table tbody tr:hover {
+            background: #f7faff;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* PAGINATION */
+
+        .pagination-button {
+            background: white;
+            border: 1px solid #dce5f0;
+            border-radius: 8px;
+            color: #1765c5;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 9px 18px;
+        }
+
+        .pagination-button:hover {
+            background: #edf5ff;
+            border-color: #bcd8fa;
+        }
+
+        #pageInfo {
+            font-size: 12px;
+            color: #77869d;
+        }
+
+        /* FOOTER */
+
+        .dashboard-footer {
+            text-align: center;
+            color: #9aa6b8;
+            font-size: 11px;
+            padding: 25px 10px 5px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 768px) {
+
+            .top-navbar {
+                padding: 14px 18px;
+            }
+
+            .top-navbar .container-fluid {
+                gap: 15px;
+            }
+
+            .main-container {
+                padding: 25px 15px;
+            }
+
+            .page-heading {
+                font-size: 23px;
+            }
+
+            .user-info {
+                width: 100%;
+            }
+
+            .chart-container {
+                height: 240px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .navbar-brand {
+                font-size: 17px;
+            }
+
+            .stat-value {
+                font-size: 25px;
+            }
+
+            .card-heading,
+            .card-content {
+                padding: 17px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- NAVIGATION BAR -->
+
+    <nav class="navbar top-navbar">
+
+        <div class="container-fluid">
+
+            <a class="navbar-brand" href="/">
+                <span class="brand-icon">❄</span>
+                ColdChain
+            </a>
+
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+
+                <!-- USER DETAILS -->
+
+                <span class="user-info me-2">
+                    Welcome,
+                    <strong>{{ current_user.username }}</strong>
+                    <br>
+                    {{ current_user.role | replace("_", " ") | title }}
+                </span>
+
+
+                <!-- DEVIATION MANAGEMENT -->
+
+                <a href="/deviations"
+                   class="btn nav-action btn-deviation">
+                    Deviation Management
+                </a>
+
+
+                <!-- ADMIN USER MANAGEMENT -->
+
+                {% if current_user.role == "ADMIN" %}
+
+                <a href="/users"
+                   class="btn nav-action btn-users">
+                    Manage Users
+                </a>
+
+                {% endif %}
+
+
+                <!-- LOGOUT -->
+
+                <form action="/logout" method="POST" class="m-0">
+
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+
+                    <button
+                        type="submit"
+                        class="btn nav-action btn-logout"
+                    >
+                        Logout
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- MAIN DASHBOARD -->
+
+    <main class="main-container">
+
+
+        <!-- PAGE HEADING -->
+
+        <div class="mb-4">
+
+            <h1 class="page-heading">
+                Operations Dashboard
+            </h1>
+
+            <p class="page-subtitle">
+                Temperature compliance verification and shipment deviation management.
+            </p>
+
+        </div>
+
+
+        <!-- STATISTICS -->
+
+        <div class="row g-3 mb-4">
+
+
+            <!-- TOTAL SHIPMENTS -->
+
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <span class="stat-label">
+                            Total Shipments
+                        </span>
+
+                        <div class="stat-icon icon-blue">
+                            📦
+                        </div>
+
+                    </div>
+
+                    <h2 id="shipments" class="stat-value">
+                        --
+                    </h2>
+
+                    <p class="stat-description">
+                        Shipments in the dataset
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- TEMPERATURE READINGS -->
+
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <span class="stat-label">
+                            Temperature Readings
+                        </span>
+
+                        <div class="stat-icon icon-cyan">
+                            🌡
+                        </div>
+
+                    </div>
+
+                    <h2 id="readings" class="stat-value">
+                        --
+                    </h2>
+
+                    <p class="stat-description">
+                        Recorded temperature observations
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- LOGGERS -->
+
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <span class="stat-label">
+                            Total Loggers
+                        </span>
+
+                        <div class="stat-icon icon-purple">
+                            📡
+                        </div>
+
+                    </div>
+
+                    <h2 id="loggers" class="stat-value">
+                        --
+                    </h2>
+
+                    <p class="stat-description">
+                        Registered temperature loggers
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- PASS RATE -->
+
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <span class="stat-label">
+                            Compliance Pass Rate
+                        </span>
+
+                        <div class="stat-icon icon-green">
+                            ✓
+                        </div>
+
+                    </div>
+
+                    <h2 id="passRate" class="stat-value">
+                        --
+                    </h2>
+
+                    <p class="stat-description">
+                        Percentage of PASS shipments
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- COMPLIANCE CHART AND SUMMARY -->
+
+        <div class="row g-3">
+
+
+            <!-- COMPLIANCE DISTRIBUTION -->
+
+            <div class="col-12 col-lg-7">
+
+                <div class="dashboard-card">
+
+                    <div class="card-heading">
+
+                        <h5 class="section-title">
+                            Compliance Distribution
+                        </h5>
+
+                        <p class="section-subtitle mb-0">
+                            Shipment decisions across all compliance categories
+                        </p>
+
+                    </div>
+
+                    <div class="card-content">
+
+                        <div class="chart-container">
+
+                            <canvas id="complianceChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- COMPLIANCE SUMMARY -->
+
+            <div class="col-12 col-lg-5">
+
+                <div class="dashboard-card">
+
+                    <div class="card-heading">
+
+                        <h5 class="section-title">
+                            Compliance Summary
+                        </h5>
+
+                        <p class="section-subtitle mb-0">
+                            Overview of shipment compliance decisions
+                        </p>
+
+                    </div>
+
+                    <div class="card-content">
+
+                        <div class="summary-item">
+
+                            <div class="summary-label">
+
+                                <span class="summary-dot dot-green"></span>
+
+                                Passed
+
+                            </div>
+
+                            <strong id="passed" class="summary-value">
+                                --
+                            </strong>
+
+                        </div>
+
+
+                        <div class="summary-item">
+
+                            <div class="summary-label">
+
+                                <span class="summary-dot dot-yellow"></span>
+
+                                Under Review
+
+                            </div>
+
+                            <strong id="review" class="summary-value">
+                                --
+                            </strong>
+
+                        </div>
+
+
+                        <div class="summary-item">
+
+                            <div class="summary-label">
+
+                                <span class="summary-dot dot-red"></span>
+
+                                Failed
+
+                            </div>
+
+                            <strong id="failed" class="summary-value">
+                                --
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SHIPMENT MONITORING -->
+
+        <div class="dashboard-card shipment-card">
+
+
+            <!-- SECTION HEADING -->
+
+            <div class="card-heading">
+
+                <h5 class="section-title">
+                    Shipment Monitoring
+                </h5>
+
+                <p class="section-subtitle mb-0">
+                    Search shipments and review their temperature compliance decisions.
+                </p>
+
+            </div>
+
+
+            <div class="card-content">
+
+
+                <!-- SEARCH AND FILTER -->
+
+                <div class="row g-3 mb-4">
+
+
+                    <div class="col-12 col-md-8">
+
+                        <input
+                            type="text"
+                            id="search"
+                            class="form-control search-control"
+                            placeholder="Search by Shipment ID..."
+                        >
+
+                    </div>
+
+
+                    <div class="col-12 col-md-4">
+
+                        <select
+                            id="status"
+                            class="form-select filter-control"
+                        >
+
+                            <option value="">
+                                All Statuses
+                            </option>
+
+                            <option value="PASS">
+                                PASS
+                            </option>
+
+                            <option value="REVIEW">
+                                REVIEW
+                            </option>
+
+                            <option value="FAIL">
+                                FAIL
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SHIPMENT TABLE -->
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Shipment ID</th>
+
+                                <th>Product</th>
+
+                                <th>Route</th>
+
+                                <th>Decision</th>
+
+                                <th>Excursion (min)</th>
+
+                                <th>Issues</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="shipmentTable">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- PAGINATION -->
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4">
+
+                    <button
+                        id="previous"
+                        type="button"
+                        class="btn pagination-button"
+                    >
+                        ← Previous
+                    </button>
+
+
+                    <span id="pageInfo" class="fw-semibold">
+
+                    </span>
+
+
+                    <button
+                        id="next"
+                        type="button"
+                        class="btn pagination-button"
+                    >
+                        Next →
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="dashboard-footer">
+
+            © 2026 Cold Chain Compliance System.
+            Temperature Compliance and Deviation Management.
+
+        </div>
+
+
+    </main>
+
+
+    <!-- DASHBOARD JAVASCRIPT -->
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+</body>
+
+</html>

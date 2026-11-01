@@ -1,0 +1,943 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>Deviation Management | Cold Chain Compliance</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f6fc;
+            color: #172b4d;
+            margin: 0;
+        }
+
+        /* NAVIGATION */
+
+        .top-navbar {
+            background: #ffffff;
+            padding: 15px 30px;
+            box-shadow: 0 2px 12px rgba(30, 60, 100, 0.06);
+            border-bottom: 1px solid #e9eef6;
+        }
+
+        .navbar-brand {
+            color: #1558a6 !important;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .brand-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            margin-right: 9px;
+            border-radius: 10px;
+            background: #e8f2ff;
+            color: #1765c5;
+            font-size: 23px;
+        }
+
+        .user-info {
+            color: #64758d;
+            font-size: 12px;
+        }
+
+        .user-info strong {
+            color: #172b4d;
+        }
+
+        .nav-action {
+            border-radius: 8px;
+            padding: 9px 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-dashboard {
+            background: #edf5ff;
+            color: #1765c5;
+            border: 1px solid #d6e8ff;
+        }
+
+        .btn-dashboard:hover {
+            background: #dcecff;
+            color: #104f9c;
+        }
+
+        .btn-users {
+            background: #1765c5;
+            color: white;
+            border: 1px solid #1765c5;
+        }
+
+        .btn-users:hover {
+            background: #104f9c;
+            color: white;
+        }
+
+        .btn-logout {
+            background: white;
+            border: 1px solid #d9e1ed;
+            color: #53657f;
+        }
+
+        .btn-logout:hover {
+            background: #f0f4fa;
+            color: #172b4d;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-container {
+            max-width: 1450px;
+            margin: auto;
+            padding: 35px 25px;
+        }
+
+        .page-heading {
+            font-size: 27px;
+            font-weight: 800;
+            color: #172b4d;
+            letter-spacing: -0.8px;
+            margin-bottom: 7px;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: #8290a5;
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            color: #243b5a;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .section-description {
+            color: #8997aa;
+            font-size: 12px;
+            margin-bottom: 0;
+        }
+
+        /* CARDS */
+
+        .content-card {
+            background: #ffffff;
+            border: 1px solid #e8eef6;
+            border-radius: 13px;
+            box-shadow: 0 4px 15px rgba(30, 60, 100, 0.035);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .card-heading {
+            padding: 21px 24px;
+            border-bottom: 1px solid #edf1f7;
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        .heading-icon {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background: #eaf3ff;
+            color: #1765c5;
+            border-radius: 10px;
+            font-size: 19px;
+            margin-right: 10px;
+        }
+
+        /* CREATE INVESTIGATION */
+
+        .create-card {
+            border-top: 3px solid #2878d0;
+        }
+
+        .user-note {
+            color: #77869d;
+            font-size: 12px;
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
+        .user-note strong {
+            color: #1765c5;
+        }
+
+        /* INPUTS */
+
+        .form-label {
+            color: #344563;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 44px;
+            border: 1px solid #dce4ef;
+            border-radius: 8px;
+            background: #fbfcff;
+            color: #344563;
+            font-size: 12px;
+        }
+
+        textarea.form-control {
+            min-height: auto;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #2878d0;
+            box-shadow: 0 0 0 3px rgba(40, 120, 208, 0.1);
+            background: white;
+        }
+
+        .form-control[readonly] {
+            background: #f1f5fb;
+        }
+
+        /* BUTTONS */
+
+        .btn-primary-custom {
+            background: #1765c5;
+            color: white;
+            border: 1px solid #1765c5;
+            border-radius: 8px;
+            padding: 11px 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-primary-custom:hover {
+            background: #104f9c;
+            color: white;
+        }
+
+        .btn-save {
+            background: #1765c5;
+            color: white;
+            border: 1px solid #1765c5;
+            border-radius: 8px;
+            padding: 12px 22px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-save:hover {
+            background: #104f9c;
+            color: white;
+        }
+
+        .btn-report {
+            background: #edf5ff;
+            color: #1765c5;
+            border: 1px solid #d6e8ff;
+            border-radius: 8px;
+            padding: 9px 13px;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-report:hover {
+            background: #dcecff;
+            color: #104f9c;
+        }
+
+        /* INVESTIGATION TABLE */
+
+        .table {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .table thead th {
+            background: #f3f7fd;
+            color: #687b96;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 15px;
+            border-bottom: 1px solid #e5ebf3;
+        }
+
+        .table tbody td {
+            padding: 15px;
+            color: #52647e;
+            font-size: 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid #edf1f7;
+        }
+
+        .table tbody tr:hover {
+            background: #f7faff;
+        }
+
+        /* INVESTIGATION DETAILS */
+
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        #selectedTitle {
+            color: #243b5a;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        #currentStatus {
+            color: #77869d;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .report-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 20px;
+            margin-bottom: 22px;
+        }
+
+        /* AUDIT HISTORY */
+
+        #auditHistory {
+            color: #53657f;
+            font-size: 12px;
+        }
+
+        #auditHistory > * {
+            margin-bottom: 12px;
+        }
+
+        /* MESSAGE */
+
+        #message {
+            font-size: 13px;
+            border-radius: 8px;
+        }
+
+        #message:empty {
+            display: none;
+        }
+
+        .alert {
+            border-radius: 9px;
+            font-size: 12px;
+        }
+
+        /* VIEWER NOTICE */
+
+        .viewer-notice {
+            background: #edf5ff;
+            border: 1px solid #d6e8ff;
+            color: #35628f;
+            padding: 16px;
+            border-radius: 9px;
+            font-size: 12px;
+        }
+
+        /* FOOTER */
+
+        .page-footer {
+            text-align: center;
+            color: #9aa6b8;
+            font-size: 11px;
+            padding: 10px 10px 25px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 768px) {
+
+            .top-navbar {
+                padding: 14px 18px;
+            }
+
+            .main-container {
+                padding: 25px 15px;
+            }
+
+            .page-heading {
+                font-size: 23px;
+            }
+
+            .card-content {
+                padding: 18px;
+            }
+
+            .card-heading {
+                padding: 18px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVIGATION BAR -->
+
+    <nav class="navbar top-navbar">
+
+        <div class="container-fluid">
+
+            <a class="navbar-brand" href="/">
+                <span class="brand-icon">❄</span>
+                ColdChain
+            </a>
+
+
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+
+                <span class="user-info me-2">
+                    Welcome,
+                    <strong>{{ current_user.username }}</strong>
+                    ({{ current_user.role | replace("_", " ") | title }})
+                </span>
+
+
+                <a class="btn nav-action btn-dashboard" href="/">
+                    Dashboard
+                </a>
+
+
+                {% if current_user.role == "ADMIN" %}
+
+                <a class="btn nav-action btn-users" href="/users">
+                    Manage Users
+                </a>
+
+                {% endif %}
+
+
+                <form action="/logout" method="POST" class="m-0">
+
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+
+                    <button
+                        type="submit"
+                        class="btn nav-action btn-logout"
+                    >
+                        Logout
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-container">
+
+
+        <!-- PAGE HEADING -->
+
+        <div>
+
+            <h1 class="page-heading">
+                Deviation Management
+            </h1>
+
+            <p class="page-subtitle">
+                Investigate compliance deviations, manage corrective actions and maintain audit records.
+            </p>
+
+        </div>
+
+
+        <!-- MESSAGE AREA -->
+
+        <div id="message" role="alert" class="mb-3"></div>
+
+
+        <!-- CREATE INVESTIGATION -->
+
+        {% if current_user.role in [
+            "ADMIN",
+            "QUALITY MANAGER",
+            "QUALITY ANALYST"
+        ] %}
+
+        <div class="content-card create-card">
+
+            <div class="card-heading">
+
+                <h5 class="section-title">
+                    <span class="heading-icon">＋</span>
+                    Open an Investigation
+                </h5>
+
+                <p class="section-description">
+                    Create a new investigation for a shipment marked FAIL or REVIEW.
+                </p>
+
+            </div>
+
+
+            <div class="card-content">
+
+                <p class="user-note mb-3">
+                    Investigation will be recorded under:
+                    <strong>{{ current_user.username }}</strong>
+                </p>
+
+
+                <form id="createForm" class="row g-3">
+
+                    <div class="col-12 col-md-9">
+
+                        <label class="form-label">
+                            Shipment ID
+                        </label>
+
+                        <input
+                            id="shipmentId"
+                            class="form-control"
+                            placeholder="Enter a FAIL or REVIEW shipment ID"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="col-12 col-md-3 d-flex align-items-end">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary-custom w-100"
+                        >
+                            ＋ Open Investigation
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- INVESTIGATION TABLE -->
+
+        <div class="content-card">
+
+            <div class="card-heading">
+
+                <h5 class="section-title">
+                    Investigation Records
+                </h5>
+
+                <p class="section-description">
+                    View and select an investigation to manage its details.
+                </p>
+
+            </div>
+
+
+            <div class="card-content">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+
+                            <tr>
+                                <th>ID</th>
+                                <th>Shipment</th>
+                                <th>Decision</th>
+                                <th>Status</th>
+                                <th>Updated</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="deviationTable">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- INVESTIGATION DETAILS -->
+
+        <section id="investigationPanel" class="d-none">
+
+
+            <div class="content-card">
+
+                <div class="card-heading">
+
+                    <div class="details-header">
+
+                        <div>
+
+                            <h5 id="selectedTitle">
+                                Investigation
+                            </h5>
+
+                            <p id="currentStatus"></p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card-content">
+
+
+                    <!-- REPORT DOWNLOADS -->
+
+                    <div class="report-actions">
+
+                        <a
+                            id="downloadDeviationReport"
+                            class="btn-report"
+                            href="#"
+                            style="display:none;"
+                        >
+                            ↓ Download Investigation PDF
+                        </a>
+
+
+                        <a
+                            id="downloadAuditReport"
+                            class="btn-report"
+                            href="#"
+                            style="display:none;"
+                        >
+                            ↓ Download Audit History PDF
+                        </a>
+
+                    </div>
+
+
+                    <!-- UPDATE INVESTIGATION -->
+
+                    {% if current_user.role != "VIEWER" %}
+
+                    <div class="mb-4">
+
+                        <h6 class="section-title">
+                            Update Investigation
+                        </h6>
+
+                        <p class="section-description">
+                            Record investigation progress and corrective action details.
+                        </p>
+
+                    </div>
+
+
+                    <form id="updateForm" class="row g-4">
+
+
+                        <!-- STATUS -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label class="form-label">
+                                New Status
+                            </label>
+
+                            <select
+                                id="newStatus"
+                                class="form-select"
+                                required
+                            >
+
+                                <option value="UNDER INVESTIGATION">
+                                    Under Investigation
+                                </option>
+
+                                <option value="CORRECTIVE ACTION">
+                                    Corrective Action
+                                </option>
+
+
+                                {% if current_user.role in [
+                                    "ADMIN",
+                                    "QUALITY MANAGER"
+                                ] %}
+
+                                <option value="CLOSED">
+                                    Closed
+                                </option>
+
+                                {% endif %}
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- LOGGED-IN USER -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label class="form-label">
+                                Updated By
+                            </label>
+
+                            <input
+                                class="form-control"
+                                value="{{ current_user.username }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <!-- INVESTIGATION NOTES -->
+
+                        <div class="col-12">
+
+                            <label class="form-label">
+                                Investigation Notes
+                            </label>
+
+                            <textarea
+                                id="notes"
+                                class="form-control"
+                                rows="3"
+                                placeholder="Describe the investigation findings..."
+                                required
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- ROOT CAUSE -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label class="form-label">
+                                Root Cause
+                            </label>
+
+                            <input
+                                id="rootCause"
+                                class="form-control"
+                                placeholder="Enter identified root cause"
+                            >
+
+                        </div>
+
+
+                        <!-- CORRECTIVE ACTION -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label class="form-label">
+                                Corrective Action
+                            </label>
+
+                            <input
+                                id="correctiveAction"
+                                class="form-control"
+                                placeholder="Enter corrective action"
+                            >
+
+                        </div>
+
+
+                        <!-- ACTION OWNER -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label class="form-label">
+                                Action Owner
+                            </label>
+
+                            <input
+                                id="owner"
+                                class="form-control"
+                                placeholder="Responsible person or team"
+                            >
+
+                        </div>
+
+
+                        <!-- DUE DATE -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label class="form-label">
+                                Due Date
+                            </label>
+
+                            <input
+                                id="dueDate"
+                                type="date"
+                                class="form-control"
+                            >
+
+                        </div>
+
+
+                        <!-- SAVE BUTTON -->
+
+                        <div class="col-12">
+
+                            <button
+                                type="submit"
+                                class="btn btn-save"
+                            >
+                                Save Investigation Update →
+                            </button>
+
+                        </div>
+
+                    </form>
+
+
+                    {% else %}
+
+
+                    <!-- VIEWER ACCESS -->
+
+                    <div class="viewer-notice">
+
+                        <strong>Read-only access</strong>
+
+                        <p class="mb-0 mt-2">
+                            You can view investigations and audit history,
+                            but cannot modify investigation records.
+                        </p>
+
+                    </div>
+
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- AUDIT HISTORY -->
+
+            <div class="content-card">
+
+                <div class="card-heading">
+
+                    <h5 class="section-title">
+                        Audit History
+                    </h5>
+
+                    <p class="section-description">
+                        Review the recorded history of investigation activities and updates.
+                    </p>
+
+                </div>
+
+
+                <div class="card-content">
+
+                    <div id="auditHistory">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <div class="page-footer">
+
+            © 2026 Cold Chain Compliance System.
+            Investigation and Audit Management.
+
+        </div>
+
+
+    </main>
+
+
+    <!-- PASS USER ROLE TO JAVASCRIPT -->
+
+    <script>
+        const currentRole = {{ current_user.role | tojson }};
+    </script>
+
+
+    <!-- DEVIATION JAVASCRIPT -->
+
+    <script src="{{ url_for('static', filename='js/deviations.js') }}"></script>
+
+
+</body>
+</html>

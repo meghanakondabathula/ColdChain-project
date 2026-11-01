@@ -1,0 +1,469 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Cold Chain Compliance</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: #f3f6fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            color: #172b4d;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 620px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #ffffff;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(25, 55, 100, 0.12);
+        }
+
+        /* LEFT BRANDING PANEL */
+
+        .brand-panel {
+            background: linear-gradient(145deg, #103c83, #1765c5, #2584df);
+            color: white;
+            padding: 55px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-panel::before {
+            content: "";
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            border: 1px solid rgba(255,255,255,0.13);
+            border-radius: 50%;
+            right: -150px;
+            top: -100px;
+        }
+
+        .brand-panel::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border: 1px solid rgba(255,255,255,0.13);
+            border-radius: 50%;
+            left: -120px;
+            bottom: -100px;
+        }
+
+        .brand-content,
+        .brand-footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+        }
+
+        .brand-heading {
+            margin-top: 95px;
+            font-size: 34px;
+            line-height: 1.35;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .brand-description {
+            margin-top: 20px;
+            max-width: 370px;
+            color: #dceaff;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .feature-list {
+            margin-top: 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 17px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #f0f6ff;
+        }
+
+        .feature-check {
+            width: 23px;
+            height: 23px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .brand-footer {
+            font-size: 11px;
+            color: #d0e3ff;
+        }
+
+        /* RIGHT LOGIN PANEL */
+
+        .form-panel {
+            padding: 65px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-heading {
+            font-size: 29px;
+            font-weight: 800;
+            color: #172b4d;
+            letter-spacing: -0.8px;
+        }
+
+        .form-subtitle {
+            margin-top: 10px;
+            margin-bottom: 35px;
+            color: #75839a;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #344563;
+            margin-bottom: 9px;
+        }
+
+        .form-control {
+            height: 50px;
+            border: 1px solid #dce3ee;
+            border-radius: 9px;
+            padding: 12px 15px;
+            font-size: 13px;
+            background: #fbfcff;
+            transition: 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #2878d0;
+            box-shadow: 0 0 0 3px rgba(40, 120, 208, 0.12);
+            background: #ffffff;
+        }
+
+        .input-group {
+            margin-bottom: 23px;
+        }
+
+        .login-button {
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(90deg, #1765c5, #287fda);
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 8px;
+            transition: 0.25s;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(90deg, #1055a9, #1765c5);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(23, 101, 197, 0.2);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .security-note {
+            margin-top: 30px;
+            padding: 13px;
+            background: #f2f7ff;
+            border: 1px solid #e1edff;
+            border-radius: 9px;
+            color: #52749f;
+            font-size: 11px;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        .copyright {
+            margin-top: 35px;
+            text-align: center;
+            color: #9aa6b8;
+            font-size: 11px;
+        }
+
+        .alert {
+            font-size: 13px;
+            border-radius: 9px;
+        }
+
+        /* RESPONSIVE DESIGN */
+
+        @media (max-width: 850px) {
+            .login-wrapper {
+                max-width: 520px;
+                grid-template-columns: 1fr;
+            }
+
+            .brand-panel {
+                padding: 30px;
+            }
+
+            .brand-heading {
+                margin-top: 35px;
+                font-size: 27px;
+            }
+
+            .brand-description {
+                margin-top: 10px;
+            }
+
+            .feature-list {
+                margin-top: 20px;
+            }
+
+            .brand-footer {
+                margin-top: 30px;
+            }
+
+            .form-panel {
+                padding: 45px 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+
+            .login-wrapper {
+                border-radius: 15px;
+            }
+
+            .brand-panel {
+                padding: 25px;
+            }
+
+            .brand-heading {
+                font-size: 24px;
+            }
+
+            .form-panel {
+                padding: 35px 24px;
+            }
+
+            .form-heading {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-wrapper">
+
+        <!-- LEFT BRANDING SECTION -->
+
+        <section class="brand-panel">
+
+            <div class="brand-content">
+
+                <div class="brand-logo">
+                    <div class="logo-icon">❄</div>
+                    <span>ColdChain</span>
+                </div>
+
+                <h1 class="brand-heading">
+                    Protecting Every Shipment.<br>
+                    Ensuring Every Degree.
+                </h1>
+
+                <p class="brand-description">
+                    A centralized platform for reviewing temperature
+                    compliance, identifying shipment deviations, and
+                    managing corrective actions throughout the cold chain.
+                </p>
+
+                <div class="feature-list">
+
+                    <div class="feature-item">
+                        <span class="feature-check">✓</span>
+                        Temperature Compliance Verification
+                    </div>
+
+                    <div class="feature-item">
+                        <span class="feature-check">✓</span>
+                        Shipment Deviation Management
+                    </div>
+
+                    <div class="feature-item">
+                        <span class="feature-check">✓</span>
+                        Investigation and Audit Tracking
+                    </div>
+
+                    <div class="feature-item">
+                        <span class="feature-check">✓</span>
+                        Compliance Reporting
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="brand-footer">
+                Reliable monitoring records. Better compliance decisions.
+            </div>
+
+        </section>
+
+
+        <!-- RIGHT LOGIN SECTION -->
+
+        <section class="form-panel">
+
+            <div>
+
+                <h2 class="form-heading">Welcome Back</h2>
+
+                <p class="form-subtitle">
+                    Sign in to access your Cold Chain Compliance dashboard.
+                </p>
+
+                <!-- FLASH MESSAGES -->
+
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+
+                <!-- LOGIN FORM -->
+
+                <form method="POST">
+
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+
+                    <div class="input-group">
+                        <label for="username" class="form-label">
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password" class="form-label">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="login-button">
+                        Sign In →
+                    </button>
+
+                </form>
+
+
+                <div class="security-note">
+                    🔒 Secure access for authorized users only.
+                    Your account permissions determine which features
+                    you can access.
+                </div>
+
+                <div class="copyright">
+                    © 2026 Cold Chain Compliance System.
+                    All rights reserved.
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</body>
+</html>

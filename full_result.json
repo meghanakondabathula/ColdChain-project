@@ -1,0 +1,22 @@
+{
+  "foreign_key_violations": 0,
+  "integrity": "ok",
+  "shipment_count": 5000,
+  "logger_count": 1000,
+  "reading_count": 362048,
+  "decision_counts": {
+    "FAIL": 752,
+    "REVIEW": 298,
+    "PASS": 3950
+  },
+  "issue_counts": {
+    "LOGGER_UNASSIGNED": 1,
+    "POLICY_MISMATCH": 1,
+    "MISSING_DATA": 354,
+    "CUSTODY_GAP": 1,
+    "EXCURSION_EXCEEDED": 750
+  },
+  "replayed_reports": 5000,
+  "seed": 20261022,
+  "generator_version": "1.0"
+}
