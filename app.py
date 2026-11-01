@@ -48,9 +48,7 @@ from report_generator import (
 )
 
 
-# --------------------------------------------------
 # 1. FLASK APPLICATION SETUP
-# --------------------------------------------------
 
 app = Flask(__name__)
 
@@ -110,10 +108,7 @@ def handle_csrf_error(error):
     )
 
 
-# --------------------------------------------------
 # 2. FLASK-LOGIN CONFIGURATION
-# --------------------------------------------------
-
 login_manager = LoginManager()
 
 login_manager.init_app(app)
@@ -137,10 +132,7 @@ def unauthorized():
     return redirect(url_for("login"))
 
 
-# --------------------------------------------------
 # 3. DATABASE CONNECTION
-# --------------------------------------------------
-
 def get_db_connection():
 
     conn = sqlite3.connect(
@@ -153,21 +145,14 @@ def get_db_connection():
     return conn
 
 
-# --------------------------------------------------
 # 4. MAIN DASHBOARD
-# --------------------------------------------------
-
 @app.route("/")
 @login_required
 def dashboard():
 
     return render_template("dashboard.html")
 
-
-# --------------------------------------------------
 # 5. DASHBOARD STATISTICS API
-# --------------------------------------------------
-
 @app.route("/api/dashboard")
 @login_required
 def dashboard_data():
@@ -222,11 +207,7 @@ def dashboard_data():
         "pass_rate": pass_rate
     })
 
-
-# --------------------------------------------------
 # 6. SHIPMENT LIST API
-# --------------------------------------------------
-
 @app.route("/api/shipments")
 @login_required
 def get_shipments():
@@ -321,11 +302,7 @@ def get_shipments():
         "pages": (total + limit - 1) // limit
     })
 
-
-# --------------------------------------------------
 # 7. SHIPMENT DETAILS PAGE
-# --------------------------------------------------
-
 @app.route("/shipment/<shipment_id>")
 @login_required
 def shipment_details(shipment_id):
@@ -335,11 +312,7 @@ def shipment_details(shipment_id):
         shipment_id=shipment_id
     )
 
-
-# --------------------------------------------------
 # 8. SHIPMENT DETAILS DATA HELPER
-# --------------------------------------------------
-
 def fetch_shipment_details(shipment_id):
     """
     Retrieve shipment information from the
@@ -496,11 +469,7 @@ def shipment_details_api(shipment_id):
 
     return jsonify(details)
 
-
-# --------------------------------------------------
 # 10. SHIPMENT COMPLIANCE PDF DOWNLOAD
-# --------------------------------------------------
-
 @app.route("/api/shipments/<shipment_id>/report")
 @login_required
 def download_shipment_report(shipment_id):
@@ -529,33 +498,21 @@ def download_shipment_report(shipment_id):
         )
     )
 
-
-# --------------------------------------------------
 # 11. DEVIATION MANAGEMENT PAGE
-# --------------------------------------------------
-
 @app.route("/deviations")
 @login_required
 def deviations_page():
 
     return render_template("deviations.html")
 
-
-# --------------------------------------------------
 # 12. LIST DEVIATIONS API
-# --------------------------------------------------
-
 @app.route("/api/deviations", methods=["GET"])
 @login_required
 def deviations_list_api():
 
     return jsonify(list_deviations())
 
-
-# --------------------------------------------------
 # 13. CREATE DEVIATION API
-# --------------------------------------------------
-
 @app.route("/api/deviations", methods=["POST"])
 @login_required
 @roles_required(
@@ -619,11 +576,7 @@ def deviations_create_api():
             "error": str(error)
         }), 400
 
-
-# --------------------------------------------------
 # 14. DEVIATION DETAILS API
-# --------------------------------------------------
-
 @app.route("/api/deviations/<int:deviation_id>")
 @login_required
 def deviation_details_api(deviation_id):
@@ -637,11 +590,7 @@ def deviation_details_api(deviation_id):
 
     return jsonify(result)
 
-
-# --------------------------------------------------
 # DEVIATION INVESTIGATION PDF DOWNLOAD
-# --------------------------------------------------
-
 @app.route("/api/deviations/<int:deviation_id>/report")
 @login_required
 def download_deviation_report(deviation_id):
@@ -664,11 +613,7 @@ def download_deviation_report(deviation_id):
         )
     )
 
-
-# --------------------------------------------------
 # DEVIATION AUDIT HISTORY PDF DOWNLOAD
-# --------------------------------------------------
-
 @app.route("/api/deviations/<int:deviation_id>/audit-report")
 @login_required
 def download_audit_history_report(deviation_id):
@@ -691,11 +636,7 @@ def download_audit_history_report(deviation_id):
         )
     )
 
-
-# --------------------------------------------------
 # 15. UPDATE DEVIATION STATUS API
-# --------------------------------------------------
-
 @app.route(
     "/api/deviations/<int:deviation_id>/status",
     methods=["POST"]
@@ -752,11 +693,7 @@ def deviation_status_api(deviation_id):
             "error": str(error)
         }), 404
 
-
-# --------------------------------------------------
 # 16. LOGIN
-# --------------------------------------------------
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
@@ -807,11 +744,7 @@ def logout():
         url_for("login")
     )
 
-
-# --------------------------------------------------
 # 18. USER MANAGEMENT PAGE
-# --------------------------------------------------
-
 @app.route("/users")
 @login_required
 @roles_required("ADMIN")
@@ -823,11 +756,7 @@ def users_page():
         roles=ROLES
     )
 
-
-# --------------------------------------------------
 # 19. CREATE USER
-# --------------------------------------------------
-
 @app.route("/users/create", methods=["POST"])
 @login_required
 @roles_required("ADMIN")
@@ -866,11 +795,6 @@ def users_create():
     return redirect(
         url_for("users_page")
     )
-
-
-# --------------------------------------------------
 # 20. RUN FLASK APPLICATION
-# --------------------------------------------------
-
 if __name__ == "__main__":
     app.run(debug=True)

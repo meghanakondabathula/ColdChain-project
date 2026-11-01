@@ -5,9 +5,7 @@ import os
 import pytest
 
 
-# ------------------------------------------
 # 1. TEST ENVIRONMENT
-# ------------------------------------------
 
 @pytest.fixture(scope="session")
 def test_environment(tmp_path_factory):
@@ -54,9 +52,7 @@ def test_environment(tmp_path_factory):
     yield application_module
 
 
-# ------------------------------------------
 # 2. FLASK TEST CLIENT
-# ------------------------------------------
 
 @pytest.fixture
 def client(test_environment):
@@ -64,9 +60,7 @@ def client(test_environment):
         yield test_client
 
 
-# ------------------------------------------
 # 3. TEST LOGIN HELPER
-# ------------------------------------------
 
 @pytest.fixture
 def login_as(client):
@@ -90,9 +84,7 @@ def login_as(client):
     return login
 
 
-# ------------------------------------------
 # 4. VALID CSRF TOKEN HELPER
-# ------------------------------------------
 
 @pytest.fixture
 def csrf_headers(client, test_environment):

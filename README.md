@@ -1,40 +1,208 @@
-# Cold-chain shipment compliance: synthetic evidence project
+# Cold Chain Management System
 
-Python 3.10+ standard library only. All data is fabricated; no third-party data or personal information.
+## 1. Project Overview
 
-## Commands
+The Cold Chain Management System is a web-based application developed using Python Flask. It helps monitor shipment information, review temperature compliance, manage temperature-related deviations and generate PDF reports.
 
-```bash
-python coldchain.py generate --out starter --shipments 20 --loggers 5
-python coldchain.py generate --out full --shipments 5000 --loggers 1000 --seed 20261022
-python coldchain.py generate --out full_again --shipments 5000 --loggers 1000 --seed 20261022
-python coldchain.py verify full full_again
+The application provides role-based access and maintains separate databases for shipment information, user authentication and deviation records.
+
+## 2. Key Features
+
+- User authentication and role-based access.
+- Shipment monitoring and compliance information.
+- Temperature deviation management.
+- Deviation status tracking and event history.
+- Dashboard for viewing shipment information.
+- User management for administrators.
+- Downloadable PDF reports.
+
+## 3. Technology Stack
+
+| Component | Technology |
+|---|---|
+| Backend | Python, Flask |
+| Frontend | HTML, CSS, JavaScript |
+| Database | SQLite |
+| Authentication | Flask-Login |
+| Form Security | Flask-WTF |
+| PDF Generation | ReportLab |
+
+## 4. Project Structure
+
+```text
+ColdChain-project/
+│
+├── app.py
+├── auth.py
+├── deviation_manager.py
+├── report_generator.py
+├── create_admin.py
+│
+├── output/
+│   └── coldchain.sqlite
+│
+├── templates/
+├── static/
+├── tests/
+│
+├── docs/
+│   ├── PROMPT_HISTORY.md
+│   ├── PROJECT_OVERVIEW.md
+│   ├── SYSTEM_ARCHITECTURE.md
+│   └── SYSTEM_WORKFLOW.md
+│
+├── requirements.txt
+├── DATA_DICTIONARY.md
+└── README.md
 ```
 
-Each run creates SQLite, 12 CSV entity tables, `ground_truth.csv`, `ground_truth.json`, `seed.sql`, `source_manifest.json` and `validation_summary.json`. CSVs are independent of ground truth. To inspect the database, use SQLite Browser or Python sqlite3.
+## 5. Environment Requirements
 
-## Relational design
+- Python 3.10 or later.
+- pip package manager.
+- SQLite database.
+- A web browser.
+- Git (for cloning the repository).
 
-Product 1:N Lot, Product 1:N ThresholdPolicy; Lot 1:N Shipment; Packaging 1:N Shipment; ThresholdPolicy 1:N Shipment; Shipment N:M Logger through ShipmentLogger (time-bounded); Shipment 1:N RouteStop, CustodyEvent, TemperatureReading and StateEvent; Logger 1:N TemperatureReading; Shipment 1:1 ExcursionReport. ShipmentLogger is optional for an intentionally invalid shipment. Policy effective_to is optional; other references are required unless explicitly described. IDs never change. Logger assignments cannot overlap in time.
+## 6. Installation and Setup
 
-All time values are ISO 8601 local synthetic times without offsets. All temperature values are Celsius, durations minutes except `hold_hours`. Primary keys are unique TEXT fields, foreign keys are enforced in SQLite, dates are chronological, and `state` values follow the lifecycle described below. The schema is executable in `coldchain.py` under `SCHEMA` and its column constraints.
+### Step 1: Clone the repository
 
-## Rules
+```bash
+git clone https://github.com/meghanakondabathula/ColdChain-project.git
+cd ColdChain-project
+```
 
-* Product policies: vaccine 2–8 °C, 20-minute excursion allowance; biologic 2–8 °C, 30 minutes; frozen therapy -25 to -15 °C, 10 minutes; ambient diagnostics 15–25 °C, 40 minutes. These are illustrative synthetic policies, **not real pharmaceutical handling guidance**.
-* Readings expected at departure and every 10 minutes through arrival, inclusive. Missing intervals trigger REVIEW or FAIL if other serious problems exist.
-* Excursions use the first outside-range sample to the next inside-range sample; an unresolved excursion is measured through one sampling interval after planned arrival. All duration calculations are shipment-scoped.
-* Missing logger assignment, mismatched product policy, invalid calibration or excessive excursion produce FAIL. Missing readings or custody gaps alone produce REVIEW. Only fully supported shipments PASS.
-* A custody gap is detected when the time between successive recorded handoffs exceeds the policy's `max_custody_gap_min`. This is a simple proxy, not a formal chain-of-custody assurance.
-* Calibrated logger pool is reused only across nonoverlapping shipment windows. Synthetic readings are always linked to a physical logger, even for the deliberate unassigned-logger case.
-* Shipment state events: PLANNED → IN_TRANSIT → DELIVERED. Event rows are append-only evidence of these transitions; `Shipment.state` is the current snapshot.
+### Step 2: Create a virtual environment
 
-## Deliberate negative cases
+```bash
+python -m venv venv
+```
 
-First five shipments are reserved: unassigned logger, wrong product policy, missing data that must not silently pass, omitted custody handoff that must be detected, and an excursion intended to expose accidental cross-shipment aggregation. Ground truth is stored separately. `CROSS_SHIPMENT_DURATION` describes the prohibited implementation behavior, not an actual cross-shipment reading corruption. The compliant evaluator scopes readings by shipment.
+Activate it on Windows:
 
-## Validation and limitations
+```powershell
+venv\Scripts\activate
+```
 
-Generation enforces SQLite primary/foreign keys, unique readings, non-overlapping logger assignments, and replay of all report decisions from persisted readings and policies. `source_manifest.json` records counts and SHA-256 hashes for all CSV exports. Generate twice and run `verify` to compare checksums.
+### Step 3: Install dependencies
 
-Limitations: this is a command-line generator and evaluator, not a deployed interactive dashboard; it does not implement authenticated deviation closure or corrective-action approvals. Policies are synthetic and not regulatory specifications. CSV/SQLite data are consistent but `seed.sql` contains INSERT statements only: apply it to a database with the schema already created. Packaging hold hours are reference metadata, not a thermal simulation. Calibration uncertainty is recorded but no measurement uncertainty propagation is performed. Full-dataset creation can take several minutes and consumes substantial disk space.
+```bash
+pip install -r requirements.txt
+```
+
+### Step 4: Configure the Flask secret key
+
+Set the required environment variable in Windows PowerShell:
+
+```powershell
+$env:FLASK_SECRET_KEY="replace-with-a-secure-random-secret"
+```
+
+Use a private secret value. Do not commit it to GitHub.
+
+### Step 5: Check the shipment database
+
+Ensure that the following database file is available:
+
+```text
+output/coldchain.sqlite
+```
+
+The application requires this database to access shipment information.
+
+## 7. Running the Application
+
+Start the Flask application:
+
+```bash
+python app.py
+```
+
+Open the following address in your browser:
+
+```text
+http://127.0.0.1:5000/
+```
+
+## 8. Testing and Verification
+
+The project includes automated tests in the `tests/` directory.
+
+Run the test suite using:
+
+```bash
+pytest
+```
+
+Core functionality to verify:
+
+- User login and authentication.
+- Role-based access restrictions.
+- Dashboard and shipment information.
+- Deviation creation and status management.
+- Deviation event history.
+- PDF report generation.
+- Administrative user management.
+
+## 9. Database Information
+
+The application uses SQLite databases:
+
+| Database | Purpose |
+|---|---|
+| `output/coldchain.sqlite` | Shipment and temperature-related information |
+| `auth.sqlite` | User authentication information |
+| `deviations.sqlite` | Deviation records and event history |
+
+Database files are excluded from Git version control. The required shipment database must be provided separately when setting up the application.
+
+## 10. Limitations
+
+- The application requires the shipment database to be available locally.
+- SQLite database files are not included in the public Git repository.
+- The Flask development server is intended for local development, not production hosting.
+- The application depends on its configured environment variables and Python packages.
+- Temperature policies and compliance conditions should be interpreted according to the project's configured rules.
+
+## 11. Project Documentation
+
+Additional documentation is available in the `docs/` directory:
+
+- `PROJECT_OVERVIEW.md` – Project objectives and features.
+- `SYSTEM_ARCHITECTURE.md` – Application components and their connections.
+- `SYSTEM_WORKFLOW.md` – Application workflow.
+- `PROMPT_HISTORY.md` – Selected development prompts and instructions.
+
+## Testing
+
+The project includes automated tests using pytest.
+
+Run the test suite with:
+
+```bash
+python -m pytest
+
+
+## Database Setup
+
+The main shipment database is not included in this repository because of its large file size.
+
+Download it from Google Drive:
+
+[Download coldchain.sqlite](https://drive.google.com/file/d/1k51FrxrN2dinFuOBNLDcXECCTC901opP/view?usp=drive_link)
+
+After downloading, place the file inside the "output" folder:
+
+cold_chain_complete_project/
+└── output/
+    └── coldchain.sqlite
+
+Make sure the database filename is exactly "coldchain.sqlite".
+Data base setup is mandatory
+
+#Additional Information
+The project also contains two more database files such as 
+1. "auth.sqlite" which stores user accounts and authentication data.
+2. "deviations.sqlite" which tores deviation-management data. 
+which are sensitive and cannot be shared

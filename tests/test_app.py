@@ -1,11 +1,7 @@
 
 import pytest
 
-
-# ------------------------------------------
 # AUTHENTICATION TESTS
-# ------------------------------------------
-
 def test_dashboard_requires_login(client):
     response = client.get("/")
 
@@ -27,11 +23,7 @@ def test_dashboard_access_after_login(client, login_as):
     assert response.status_code == 200
     assert "shipments" in response.get_json()
 
-
-# ------------------------------------------
 # INVALID RESOURCE TESTS
-# ------------------------------------------
-
 def test_invalid_shipment(client, login_as):
     login_as("testadmin")
 
@@ -52,10 +44,7 @@ def test_invalid_deviation(client, login_as):
     assert response.status_code == 404
 
 
-# ------------------------------------------
 # CSRF PROTECTION TEST
-# ------------------------------------------
-
 def test_missing_csrf_token(client, login_as):
     login_as("testadmin")
 
@@ -67,10 +56,7 @@ def test_missing_csrf_token(client, login_as):
     assert response.status_code == 400
 
 
-# ------------------------------------------
 # ROLE PERMISSION TESTS
-# ------------------------------------------
-
 def test_viewer_cannot_create_deviation(
     client, login_as, csrf_headers
 ):
@@ -130,10 +116,7 @@ def test_viewer_cannot_access_user_management(
     assert response.status_code == 403
 
 
-# ------------------------------------------
 # PDF REPORT TESTS
-# ------------------------------------------
-
 def test_invalid_shipment_pdf(client, login_as):
     login_as("testadmin")
 
@@ -187,10 +170,7 @@ def test_valid_shipment_pdf(client, login_as):
     assert response.data.startswith(b"%PDF-")
 
 
-# ------------------------------------------
 # AUDIT DATABASE INTEGRITY
-# ------------------------------------------
-
 def test_audit_event_is_immutable(test_environment):
     import sqlite3
     import deviation_manager

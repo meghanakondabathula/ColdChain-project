@@ -238,11 +238,7 @@ def generate_shipment_pdf(shipment_id, details):
         )
 
     elements.append(Spacer(1, 18))
-
-    # -----------------------------------------
     # SHIPMENT DETAILS
-    # -----------------------------------------
-
     for key, value in details.items():
 
         if key in ("readings", "temperature_readings"):
@@ -284,11 +280,7 @@ def generate_shipment_pdf(shipment_id, details):
                     "Value": value
                 }
             )
-
-    # -----------------------------------------
     # COMPLIANCE EVIDENCE SUMMARY
-    # -----------------------------------------
-
     shipment = details.get("shipment", {})
 
     raw_evidence = (
